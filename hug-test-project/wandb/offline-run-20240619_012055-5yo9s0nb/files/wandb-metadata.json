@@ -1,0 +1,122 @@
+{
+    "os": "Linux-6.5.0-1022-azure-x86_64-with-glibc2.35",
+    "python": "3.12.2",
+    "heartbeatAt": "2024-06-19T01:20:55.671061",
+    "startedAt": "2024-06-19T01:20:55.594221",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/REDMOND.t-kgatmiry/hug-test-project/test.py",
+    "codePathLocal": "test.py",
+    "codePath": "test.py",
+    "host": "GCRAZGDL2225",
+    "username": "REDMOND.t-kgatmiry",
+    "executable": "/home/REDMOND.t-kgatmiry/miniconda3/envs/myenv/bin/python",
+    "cpu_count": 16,
+    "cpu_count_logical": 16,
+    "cpu_freq": {
+        "current": 2820.901874999999,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3098.059,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.45,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.45,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3104.413,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.45,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3109.312,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3119.978,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3201.138,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3042.272,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.45,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.45,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3227.857,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3200.386,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.45,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2912.865,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.45,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 992.2479553222656,
+            "used": 69.68106460571289
+        }
+    },
+    "gpu": "Tesla T4",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "Tesla T4",
+            "memory_total": 16106127360
+        }
+    ],
+    "memory": {
+        "total": 108.01485061645508
+    }
+}
