@@ -1,0 +1,15 @@
+artifact_uri: file:///home/REDMOND.t-kgatmiry/mytests/mlruns/0/6aa654d17b5c4c25a43c59f92ddb1dee/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6aa654d17b5c4c25a43c59f92ddb1dee
+run_name: model3-outputs
+run_uuid: 6aa654d17b5c4c25a43c59f92ddb1dee
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719428968925
+status: 1
+tags: []
+user_id: REDMOND.t-kgatmiry

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/REDMOND.t-kgatmiry/mytests/mlruns/0/bed15e1075fe48dc96b29e2460e9cc81/artifacts
+end_time: 1719027325471
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: bed15e1075fe48dc96b29e2460e9cc81
+run_name: my_awesome_eli5_clm-model
+run_uuid: bed15e1075fe48dc96b29e2460e9cc81
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1719026464903
+status: 3
+tags: []
+user_id: REDMOND.t-kgatmiry
