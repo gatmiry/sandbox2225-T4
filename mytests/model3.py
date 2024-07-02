@@ -100,10 +100,11 @@ from datasets import load_from_disk
 tokenized_datasets = load_from_disk('./model3-outputs')
 print('this is ', len(tokenized_datasets['train'][0]['input_ids']))
 ## slicing the dataset to a smaller size
-tokenized_datasets = {
-    'train': tokenized_datasets['train'].select(np.arange(300000)),
-    'validation': tokenized_datasets['validation'].select(np.arange(3000))
-}
+#tokenized_datasets = {
+#    'train': tokenized_datasets['train'].select(np.arange(1000)),#500000
+#    'validation': tokenized_datasets['validation'].select(np.arange(100))#5000
+#}
+
 #print('tokenized_datasets is ', tokenized_datasets)
 
 
@@ -127,19 +128,20 @@ data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
 # now set the training arguments
 from transformers import Trainer, TrainingArguments
 args = TrainingArguments(
-    output_dir='model3-outputs',
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=4,
+    output_dir='model3-config-outputs',
+    logging_dir='./model3-logging-outputs',
+    per_device_train_batch_size=50,
+    per_device_eval_batch_size=50,
     evaluation_strategy='steps',
-    eval_steps=5_000,
-    logging_steps=5_000,
+    eval_steps=10,
+    logging_steps=10,
+    save_steps=10,
     gradient_accumulation_steps=8,
-    num_train_epochs=1,
+    num_train_epochs=4,
     weight_decay=0.1,
     warmup_steps=1_000,
     lr_scheduler_type="cosine",
     learning_rate=5e-4,
-    save_steps=5_000,
     fp16=True,
 )
 
@@ -165,7 +167,11 @@ trainer = Trainer(model=mymodel,
                   train_dataset=tokenized_datasets['train'],
                   eval_dataset=tokenized_datasets['validation']
                 )
-trainer.save_model('./model3weights')
 
 trainer.train()
+trainer.save_model('./model3weights_fifth')
+log_history_file = './model3_log_history_fifth.json'
+import json
+with open(log_history_file, 'w') as f:
+    json.dump(trainer.state.log_history, f, indent=4)
 #mymodel.save_pretrained('./model4/mymodel', from_pt=True)
