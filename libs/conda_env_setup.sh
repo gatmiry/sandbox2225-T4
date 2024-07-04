@@ -5,7 +5,20 @@ bash Miniconda3-latest-Linux-x86_64.sh
 export PATH=~/miniconda3/bin:$PATH
 
 conda install python3
-conda ceate --name myenv2
+
+## creating virtual env
+conda ceate --name env3
+conda activate env3
+conda deactivate
 
 ## update conda
 conda update conda
+
+## check conda
+which conda
+
+## installing other dependencies
+python -m pip install jupyter
+pip install accelerate -U
+conda install conda-forge::transformers
+conda install datasets
