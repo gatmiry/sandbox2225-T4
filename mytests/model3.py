@@ -100,10 +100,10 @@ from datasets import load_from_disk
 tokenized_datasets = load_from_disk('./model3-outputs')
 print('this is ', len(tokenized_datasets['train'][0]['input_ids']))
 ## slicing the dataset to a smaller size
-#tokenized_datasets = {
-#    'train': tokenized_datasets['train'].select(np.arange(1000)),#500000
-#    'validation': tokenized_datasets['validation'].select(np.arange(100))#5000
-#}
+tokenized_datasets = {
+    'train': tokenized_datasets['train'].select(np.arange(1000)),#500000
+    'validation': tokenized_datasets['validation'].select(np.arange(1000))#5000
+}
 
 #print('tokenized_datasets is ', tokenized_datasets)
 
@@ -127,15 +127,19 @@ data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
 
 # now set the training arguments
 from transformers import Trainer, TrainingArguments
+import datetime
+datetime_str = datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S')
+
 args = TrainingArguments(
-    output_dir='model3-config-outputs',
-    logging_dir='./model3-logging-outputs',
-    per_device_train_batch_size=50,
-    per_device_eval_batch_size=50,
+    output_dir='testmodel3outputs_' + datetime_str,
+    logging_dir='./testmodel3logs_' + datetime_str,
+    per_device_train_batch_size=1,
+    per_device_eval_batch_size=1,
     evaluation_strategy='steps',
+    logging_strategy='steps',
     eval_steps=10,
-    logging_steps=10,
-    save_steps=10,
+    logging_steps=1,
+    save_steps=1,
     gradient_accumulation_steps=8,
     num_train_epochs=4,
     weight_decay=0.1,
@@ -169,8 +173,8 @@ trainer = Trainer(model=mymodel,
                 )
 
 trainer.train()
-trainer.save_model('./model3weights_fifth')
-log_history_file = './model3_log_history_fifth.json'
+trainer.save_model('./testmodel3weights_' + datetime_str)
+log_history_file = './testmodel3logs_' + datetime_str + '.json'
 import json
 with open(log_history_file, 'w') as f:
     json.dump(trainer.state.log_history, f, indent=4)
