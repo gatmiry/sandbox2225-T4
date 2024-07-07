@@ -100,10 +100,10 @@ from datasets import load_from_disk
 tokenized_datasets = load_from_disk('./model3-outputs')
 print('this is ', len(tokenized_datasets['train'][0]['input_ids']))
 ## slicing the dataset to a smaller size
-tokenized_datasets = {
-    'train': tokenized_datasets['train'].select(np.arange(1000)),#500000
-    'validation': tokenized_datasets['validation'].select(np.arange(1000))#5000
-}
+#tokenized_datasets = {
+#    'train': tokenized_datasets['train'].select(np.arange(1000)),#500000
+#    'validation': tokenized_datasets['validation'].select(np.arange(1000))#5000
+#}
 
 #print('tokenized_datasets is ', tokenized_datasets)
 
@@ -133,15 +133,15 @@ datetime_str = datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S')
 args = TrainingArguments(
     output_dir='testmodel3outputs_' + datetime_str,
     logging_dir='./testmodel3logs_' + datetime_str,
-    per_device_train_batch_size=1,
-    per_device_eval_batch_size=1,
+    per_device_train_batch_size=50,
+    per_device_eval_batch_size=50,
     evaluation_strategy='steps',
     logging_strategy='steps',
-    eval_steps=10,
-    logging_steps=1,
-    save_steps=1,
+    eval_steps=100,
+    logging_steps=100,
+    save_steps=1000,
     gradient_accumulation_steps=8,
-    num_train_epochs=4,
+    num_train_epochs=8,
     weight_decay=0.1,
     warmup_steps=1_000,
     lr_scheduler_type="cosine",
