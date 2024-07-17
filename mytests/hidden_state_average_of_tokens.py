@@ -33,13 +33,10 @@ class MyModel(PreTrainedModel):
         self.decoder = GPT2LMHeadModel(config)
 
     def forward(self, input_ids, labels=None, attention_mask=None):
-        #print('attention mask is ', attention_mask)
-        #print('input ids are ', input_ids)
-        #print('model context length is ', self.c)
+        
         with torch.no_grad():
             encoder_outputs = self.encoder(input_ids)
-            #print('has hidden state ', encoder_outputs.last_hidden_state.shape)
-            hidden_embedding = encoder_outputs.last_hidden_state[:,-1,:].unsqueeze(1)
+            hidden_embedding = torch.mean(encoder_outputs.last_hidden_state, dim=1).unsqueeze(1)
             decoder_hidden_inputs = self.second_encoder(input_ids, output_hidden_states=True).hidden_states[0]
             updated_input = torch.cat((hidden_embedding, decoder_hidden_inputs), dim=1)
 
@@ -62,25 +59,16 @@ context_length=512
 myconfig.n_ctx = context_length
 #myconfig.hidden_size = 768
 
-## initializing the model
+## initializing the model and tokenizer
 mymodel = MyModel(myconfig)
-
-#decoder_model = GPT2LMHeadModel.from_pretrained('gpt2')
 tokenizer = AutoTokenizer.from_pretrained('gpt2')
-inputs = tokenizer('Studies have been shown that owning a dog is good for your health', return_tensors='pt')
-outputs = mymodel(inputs['input_ids'], labels=inputs['input_ids'], attention_mask=inputs['attention_mask'])
-print('output loss is ', outputs['loss'])
-
-
-
 from datasets import load_from_disk
 tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer')
 ## slicing the dataset to a smaller size
-tokenized_datasets = {
-    'train': tokenized_datasets['train'].select(np.arange(10)),#500000
-    'validation': tokenized_datasets['validation'].select(np.arange(10))#5000
-}
-
+#tokenized_datasets = {
+#    'train': tokenized_datasets['train'].select(np.arange(10)),#500000
+#    'validation': tokenized_datasets['validation'].select(np.arange(10))#5000
+#}
 
 
 ## now instantiate the data collator
@@ -91,7 +79,7 @@ data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
 # now set the training arguments
 from transformers import Trainer, TrainingArguments
 import datetime
-datetime_str = 'encoder_is_pretrained.py_gpt2tokenizer_'+ datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S')
+datetime_str = 'encoder_is_pretrained.py_'+ datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S')
 
 args = TrainingArguments(
     output_dir='./'+datetime_str+'/model3outputs',
@@ -100,9 +88,9 @@ args = TrainingArguments(
     per_device_eval_batch_size=50,
     evaluation_strategy='steps',
     logging_strategy='steps',
-    eval_steps=200,
-    logging_steps=100,
-    save_steps=1000,
+    eval_steps=100,
+    logging_steps=50,
+    save_steps=2000,
     gradient_accumulation_steps=8,
     num_train_epochs=4,
     weight_decay=0.1,
@@ -125,13 +113,13 @@ trainer.train()
 trainer.save_model('./'+datetime_str+'/model3weights')
 log_history_file = './'+ datetime_str +'/model3logs.json'
 import json
-#with open(log_history_file, 'w') as f:
-    #json.dump(trainer.state.log_history, f, indent=4)
+with open(log_history_file, 'w') as f:
+    json.dump(trainer.state.log_history, f, indent=4)
 
-## copying the code file
+## copying the code file in folder
 import os
 import shutil
-#src_path = os.getcwd() + '/encoder_is_pretrained.py'
-#dst_path = os.getcwd() + '/'+ datetime_str
-#shutil.copy(src_path, dst_path)
+src_path = os.getcwd() + '/encoder_is_pretrained.py'
+dst_path = os.getcwd() + '/'+ datetime_str
+shutil.copy(src_path, dst_path)
 print('just copied the file!')
