@@ -24,3 +24,6 @@ amlt status simple_pytorch_experiment
 amlt workspace add gcrllama2ws --resource-group GCRllama2 --subscription SUBSCRITION-ID
 ## you can check out existing valid workspaces with the following command
 amlt workspace list sing
+
+## see available images
+amlt cache base-images
