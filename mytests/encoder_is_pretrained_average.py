@@ -104,11 +104,11 @@ args = TrainingArguments(
     logging_steps=100,
     save_steps=1000,
     gradient_accumulation_steps=8,
-    num_train_epochs=8,
+    num_train_epochs=4,
     weight_decay=0.1,
     warmup_steps=1_000,
     lr_scheduler_type="cosine",
-    learning_rate=5e-4,
+    learning_rate=2e-5,
     fp16=True,
 )
 
