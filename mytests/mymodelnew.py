@@ -11,14 +11,15 @@ class MyModel(PreTrainedModel):
         #self.config= config
         self.encoder = GPT2Model(config)
         #self.second_encoder = GPT2Model(config)
-        self.decoder = GPT2LMHeadModel(config)
+        self.decoder = GPT2Model(config)
+        self.lm_head = torch.nn.Linear(config.n_embd, config.vocab_size, bias=False)
 
     def forward(self, input_ids, labels=None, attention_mask=None):\
         #device = 'cuda'
         position_ids = torch.arange(input_ids.shape[1], dtype=torch.long, device='cuda')
         position_ids = position_ids.unsqueeze(0)
-        inputs_embeds = self.decoder.transformer.wte(input_ids)
-        position_embeds = self.decoder.transformer.wpe(position_ids)
+        inputs_embeds = self.decoder.wte(input_ids)
+        position_embeds = self.decoder.wpe(position_ids)
         hidden_states = inputs_embeds + position_embeds
 
         encoder_outputs = self.encoder(input_ids)
@@ -28,7 +29,8 @@ class MyModel(PreTrainedModel):
         #    decoder_hidden_inputs = self.second_encoder(input_ids, output_hidden_states=True).hidden_states[0]
         #hidden_embedding_dim = hidden_embedding.shape[2]
         updated_input = torch.cat((hidden_embedding, hidden_states), dim=1)
-        logits = self.decoder(inputs_embeds=updated_input)['logits']
+        final_hidden_states = self.decoder(inputs_embeds=updated_input)[0]
+        logits = self.lm_head(final_hidden_states)
         logits = F.log_softmax(logits, dim=-1)
         shifted_prediction_scores = logits[:, 1:-1, :]
         
