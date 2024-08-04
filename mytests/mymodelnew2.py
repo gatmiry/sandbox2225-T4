@@ -34,6 +34,9 @@ class MyModel(PreTrainedModel):
         #logits = F.log_softmax(logits, dim=-1)
         shifted_prediction_scores = logits[:, 1:-1, :]
         
+        if labels == None:
+            return {'logits':logits}
+
         labels[attention_mask == 0] = -100 
         labels = labels[:, 1:]
         loss_fct = CrossEntropyLoss()

@@ -6,7 +6,7 @@ from torch.utils.data import Dataset, Subset
 from torch.nn import CrossEntropyLoss
 # loading the dataset
 from datasets import load_dataset, DatasetDict
-from mymodelnew import MyModel
+from mymodelnew4 import MyModel
 
 myconfig = AutoConfig.from_pretrained('gpt2')
 context_length=512
@@ -22,12 +22,12 @@ tokenizer =  AutoTokenizer.from_pretrained('gpt2')
 #rint('output loss is ', outputs['loss'])
 
 from datasets import load_from_disk
-tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer')
+tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-varlength')
 ## slicing the dataset to a smaller size
 
 #tokenized_datasets = {
 #    'train': tokenized_datasets['train'].select(np.arange(500)),#500000
-#    'validation': tokenized_datasets['validation'].select(np.arange(500))#5000
+#    'validation': tokenized_datasets['validation'].select(np.arange(200))#5000
 #}
 
 
@@ -41,17 +41,17 @@ import datetime
 datetime_str = datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S') + 'alaki'
 
 args = TrainingArguments(
-    output_dir='backmodel3_default_outputs_' + datetime_str,
-    logging_dir='./backmodel3_default_logs_' + datetime_str,
-    per_device_train_batch_size=40,
-    per_device_eval_batch_size=40,
+    output_dir='posmodel3_default_outputs_' + datetime_str,
+    logging_dir='./posmodel3_default_logs_' + datetime_str,
+    per_device_train_batch_size=50,
+    per_device_eval_batch_size=50,
     evaluation_strategy='steps',
     logging_strategy='steps',
-    eval_steps=100,
-    logging_steps=100,
+    eval_steps=200,
+    logging_steps=20,
     save_steps=1000,
     gradient_accumulation_steps=8,
-    num_train_epochs=8,
+    num_train_epochs=4,
     weight_decay=0.1,
     warmup_steps=1_000,
     lr_scheduler_type="cosine",
@@ -72,9 +72,9 @@ trainer.train()
 #torch.save(model_state_dict, './nnmodel3_weights_' + datetime_str)
 #from safetensors.torch import save_model
 #save_model(mymodel, './safemodel3_weights_' + datetime_str)
-trainer.save_model('./backmodel3_weights_' + datetime_str)
+trainer.save_model('./posmodel3_weights_' + datetime_str)
 #print('model tied weight is ', mymodel._tied_weights_keys)
-log_history_file = './backmodel3_logs_' + datetime_str + '.json'
+log_history_file = './posmodel3_logs_' + datetime_str + '.json'
 import json
 with open(log_history_file, 'w') as f:
     json.dump(trainer.state.log_history, f, indent=4)
