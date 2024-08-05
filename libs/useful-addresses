@@ -1,1 +1,2 @@
 distributred computing with Huggingface Trainer: https://github.com/huggingface/transformers/blob/main/examples/pytorch/language-modeling/run_clm.py
+phyagi docker image: https://github.com/microsoft/phyagi/blob/main/clusters/aml/amulet/train_phi2_h100.yaml
