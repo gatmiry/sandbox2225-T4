@@ -1,0 +1,13 @@
+## docker has a Dockerfile from which we build and image, then we run that image to create a container that can be running in the background
+
+## see the list of images
+docker iamge ls
+
+## see the list of containers
+docker ps -a
+
+## built with tag (name), the final arguement specifies whwere docker should be looking for Dockerfile
+  docker built -t IMAGE-NAME .
+
+## run an image to with tag some name to create container from image
+  docker run IMAGE-NAME
