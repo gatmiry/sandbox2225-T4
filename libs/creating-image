@@ -1,0 +1,3 @@
+conda install conda-forge::transformers
+conda install datasets
+pip install transformers -U
