@@ -1,0 +1,13 @@
+FROM python:3.8
+
+WORKDIR .
+
+COPY testfile2.py .
+
+CMD ["python", "./testfile2.py"]
+
+#FROM ubuntu:20.04
+
+#RUN apt update && apt install -y sbcl
+
+#WORKDIR /usr/src
