@@ -1,25 +1,31 @@
 from datasets import load_dataset
 from transformers import AutoTokenizer
 import torch
-import mymodel 
-checkpoint = './testmodel3weights_2024-07-07--05:59:32'
+from mymodelnew4 import MyModel
+checkpoint = 'nodotmodel3_weights_2024-08-05--20:10:40alaki'
+#checkpoint = './testmodel3weights_2024-07-07--05:59:32'
 #checkpoint = './model3weights_2024-07-04--16:34:15'
-model = mymodel.MyModel.from_pretrained(checkpoint)
+model = MyModel.from_pretrained(checkpoint)
+tokenizer = AutoTokenizer.from_pretrained('gpt2')
 
 
 #raw_dataset = load_dataset(checkpoint)
-tokenizer = AutoTokenizer.from_pretrained('google-t5/t5-small')
-def calculate_embedding(input_text):
-    with torch.no_grad():
+#tokenizer = AutoTokenizer.from_pretrained('google-t5/t5-small')
+class EmbedCalculator():
+    #def __init__(self, tokenizer):
+    #    self.tokenizer = tokenizer
+    def calculate_embedding(input_text):
+        with torch.no_grad():
         #print('input text is ', input_text)
-        outputs = tokenizer(input_text, return_tensors='pt')
+            outputs = tokenizer(input_text, return_tensors='pt')
+            outputs['input_ids'] = outputs['input_ids'] + tokenizer.eos_token
         #print('im here')
         #print('outputs are ', outputs['input_ids'])
 
         #print('output ids are ', outputs['input_ids'])
         #print('len is ', len(outputs['input_ids'] - 1))
-        hidden_embedding = model.encoder(torch.tensor(outputs['input_ids'])).last_hidden_state.detach()[0, outputs['input_ids'].shape[1]-1, :]
-    return hidden_embedding
+            hidden_embedding = model.encoder(outputs['input_ids']).last_hidden_state.detach()[0, outputs['input_ids'].shape[1]-1, :]
+        return hidden_embedding
 
 ## a lot similar a & b! 
 a = calculate_embedding("""In the charming village of Greendale, there was a boy named Noah who loved to roam the vast fields and woods that surrounded his home. One sunny morning, as he wandered further than he ever had before, he stumbled upon a hidden meadow filled with vibrant, glowing flowers and butterflies of every color. The air was filled with a sweet, enchanting fragrance that made the entire place feel magical.

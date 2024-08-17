@@ -6,7 +6,7 @@ from torch.utils.data import Dataset, Subset
 from torch.nn import CrossEntropyLoss
 # loading the dataset
 from datasets import load_dataset, DatasetDict
-from mymodelnew4 import MyModel
+from mymodelmargin import MySimilarityModel
 from mycollators import DataCollatorForTextSimilarity
 
 myconfig = AutoConfig.from_pretrained('gpt2')
@@ -16,10 +16,8 @@ myconfig.max_position_embeddings = context_length
 #myconfig.hidden_size = 768
 
 ## initializing with the pretrained summary model 
-#mymodel = MySimilarityModel.from_pretrained('nodotmodel3_weights_2024-08-10--20:06:46alaki')
-mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-10--20:06:46alaki') ## this is the model fine tuned on askubuntu
-#mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-05--20:10:40alaki') ## this is the final var length model with 4 epochs
-#mymodel = MyModel.from_pretrained('./posmodel3_weights_2024-07-29--17:41:44alaki') ## this is the final fixed length model
+mymodel = MySimilarityModel.from_pretrained('nodotmodel3_weights_2024-08-10--20:06:46alaki')
+#mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-05--20:10:40alaki')
 #mymodel = MyModel(myconfig)
 #mymodel.set_config(myconfig)
 tokenizer =  AutoTokenizer.from_pretrained('gpt2')
@@ -30,8 +28,8 @@ tokenizer =  AutoTokenizer.from_pretrained('gpt2')
 from datasets import load_from_disk
 #tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-varlength')
 #tokenized_datasets = load_from_disk('./tinystories-withsummary-gpt2tokenizer')
-tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-askubuntubody-150000train-10000test')
-#tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-askubuntubody-margintraining-150000train-10000test')
+#tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-askubuntubody-150000train-10000test')
+tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-askubuntubody-margintraining-150000train-10000test')
 
 ## slicing the dataset to a smaller size
 
@@ -43,8 +41,8 @@ tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-askubuntubod
 
 ## now instantiate the data collator
 tokenizer.pad_token = tokenizer.eos_token
-data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
-#data_collator = DataCollatorForTextSimilarity(tokenizer=tokenizer, sub_batch_size=300)
+#data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
+data_collator = DataCollatorForTextSimilarity(tokenizer=tokenizer, sub_batch_size=2)
 
 # now set the training arguments
 from transformers import Trainer, TrainingArguments
@@ -54,15 +52,15 @@ datetime_str = datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S') + 'alaki'
 args = TrainingArguments(
     output_dir='nodotmodel3_default_outputs_' + datetime_str,
     logging_dir='./nodotmodel3_default_logs_' + datetime_str,
-    per_device_train_batch_size=10,
-    per_device_eval_batch_size=10,
+    per_device_train_batch_size=1,
+    per_device_eval_batch_size=1,
     evaluation_strategy='steps',
     logging_strategy='steps',
-    eval_steps=400,
-    logging_steps=80,
+    eval_steps=500,
+    logging_steps=100,
     save_steps=1000000,
     gradient_accumulation_steps=8,
-    num_train_epochs=4,
+    num_train_epochs=8,
     weight_decay=0.1,
     warmup_steps=1_000,
     lr_scheduler_type="cosine",
