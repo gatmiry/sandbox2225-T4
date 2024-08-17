@@ -19,17 +19,25 @@ tokenized_datasets = {
     'validation': tokenized_datasets['validation'].select(np.arange(20000))#5000
 }
 
+tokenizer.pad_token = tokenizer.eos_token
+from transformers import DataCollatorForLanguageModeling
+data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
+#myten = data_collator(tokenized_datasets['validation']['input_ids'][3500 + 1*20:3500 + 2*20], return_tensors='pt')
+#print('myten is ', myten.shape)
+
 ave = 0
 for i in range(0,10):
     #input_str = tokenized_datasets['train']['input_ids'][i]
     #input_ids = tokenizer(input_str, return_tensors='pt')['input_ids']
-    input_ids = torch.tensor(tokenized_datasets['validation']['input_ids'][3500 + i*1:3500 + (i+1)*1]).to('cuda')
+    input_ids = data_collator(tokenized_datasets['validation']['input_ids'][3500 + i*20:3500 + (i+1)*20])['input_ids'].to('cuda')
     print('input id shape is ', input_ids.shape)
     model2 = model2.to('cuda')
     model2.eval()
     with torch.no_grad():
         print('im here!')
-        loss_val = model2(input_ids, labels=input_ids)['loss']
+        mymask = torch.where(input_ids == tokenizer.eos_token_id, 0, 1)
+        print('mask is ', mymask)
+        loss_val = model2(input_ids, labels=input_ids, attention_mask=mymask)['loss']
         ave += loss_val
         print('i is ', i, ' loss is ', loss_val)
 ave = ave / 10

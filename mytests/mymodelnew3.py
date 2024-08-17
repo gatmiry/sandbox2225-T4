@@ -47,7 +47,7 @@ class MyModel(PreTrainedModel):
         logits = self.lm_head(final_hidden_states)
         #logits = F.log_softmax(logits, dim=-1)
         shifted_prediction_scores = logits[:, 1:-1, :]
-        
+        print('attention mask is ', attention_mask)
         if labels == None:
             return {'logits':logits}
 
