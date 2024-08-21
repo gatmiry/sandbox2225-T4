@@ -53,15 +53,15 @@ datetime_str = datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S') + 'alaki'
 args = TrainingArguments(
     output_dir='nodotmodel3_default_outputs_' + datetime_str,
     logging_dir='./nodotmodel3_default_logs_' + datetime_str,
-    per_device_train_batch_size=25,
-    per_device_eval_batch_size=25,
+    per_device_train_batch_size=30,
+    per_device_eval_batch_size=30,
     evaluation_strategy='steps',
     logging_strategy='steps',
     eval_steps=500,
     logging_steps=100,
     save_steps=1000000,
     gradient_accumulation_steps=8,
-    num_train_epochs=8,
+    num_train_epochs=4,
     weight_decay=0.1,
     warmup_steps=1_000,
     lr_scheduler_type="cosine",
@@ -74,8 +74,8 @@ trainer = Trainer(model=mymodel,
                   tokenizer=tokenizer,
                   args=args,
                   data_collator=data_collator,
-                  train_dataset=tokenized_datasets['train'].select(np.arange(1,2000000)),
-                  eval_dataset=tokenized_datasets['train'].select(np.arange(2000001, 2010000))
+                  train_dataset=tokenized_datasets['train'].select(np.arange(1,4857871)),
+                  eval_dataset=tokenized_datasets['train'].select(np.arange(4857872, 4867871))
                 )
 #print('model tied weight is ', mymodel._tied_weights_keys)
 num_gpus_torch = torch.cuda.device_count()
