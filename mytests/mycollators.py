@@ -27,18 +27,21 @@ class DataCollatorForTextSimilarity(DataCollatorWithPadding):
             list_of_sub_batches.append(self.tokenizer.pad({'input_ids': text_batch[i*self.sub_batch_size: (i+1)*self.sub_batch_size]}, padding=self.padding, return_tensors='pt')['input_ids'])
         return {'list_of_sub_batches': list_of_sub_batches, 'sign': sign, 'indices': indices}
     
-    class DataCollatorForConversationTraining(DataCollatorWithPadding):
-        def __init__(self, tokenizer, max_num_paragraphs):
-            self.max_num_paragraphs = max_num_paragraphs
-            self.tokenizer = tokenizer
-        def __call__(self, features):
-            conv_len = self.max_num_paragraphs
-            for short_conversation_list in features:
-                if len(short_conversation_list) < conv_len:
-                    conv_len = len(short_conversation_list)
-            conversations_over_time = [[] for i in range(conv_len)]
-            for short_converration_list in features:
-                for i in range(conv_len):
-                    conversations_over_time.append(short_converration_list[i])
-            conversations_over_time = [self.tokenizer.pad({'input_ids': conversations}, padding=self.padding, return_tensors='pt')['input_ids'] for conversations in conversations_over_time]
-            return conversations_over_time
+class DataCollatorForConversationTraining(DataCollatorWithPadding):
+    def __init__(self, tokenizer, max_num_paragraphs):
+        self.max_num_paragraphs = max_num_paragraphs
+        self.tokenizer = tokenizer
+    def __call__(self, features):
+        conv_len = self.max_num_paragraphs
+        for short_conversation_list in features:
+            if len(short_conversation_list['input_ids']) < conv_len:
+                conv_len = len(short_conversation_list['input_ids'])
+                #print('conv len is ', conv_len)
+        conversations_over_time = [[] for i in range(conv_len)]
+        for short_conversation_list in features:
+            for i in range(conv_len):
+                #print('short_conversation_list is ', short_conversation_list)
+                conversations_over_time[i].append(short_conversation_list['input_ids'][i])
+        conversations_over_time = [self.tokenizer.pad({'input_ids': conversations}, padding=self.padding, return_tensors='pt')['input_ids'] for conversations in conversations_over_time]
+        attention_masks_over_time = [self.tokenizer.pad({'input_ids': conversations}, padding=self.padding, return_tensors='pt')['attention_mask'] for conversations in conversations_over_time]
+        return {'input_ids_list': conversations_over_time, 'labels_list': conversations_over_time, 'attention_mask_list': attention_masks_over_time}
