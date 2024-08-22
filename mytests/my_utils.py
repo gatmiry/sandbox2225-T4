@@ -30,12 +30,16 @@ class MyGPT2SdpaAttention(GPT2SdpaAttention):
             print('there is cross attention!')
         #print('hidden state is ', hidden_states)
         ## here we are assuming that this module is never instantiated to implement cross attention, here is the part that we change compared to GPT2Attention
-        hidden_embeddings = hidden_states[:,:self.num_embeddings,:]
-        hidden_words = hidden_states[:,self.num_embeddings:,:]
+        #print('hidden states are ', hidden_states)
+        hidden_embeddings = hidden_states[:,:self.num_embeddings,:].contiguous()
+        hidden_words = hidden_states[:,self.num_embeddings:,:].contiguous()
         output_embeddings = self.my_c_attn_embeddings(hidden_embeddings)
+        #print('output_embeddings are ', output_embeddings)
         output_words = self.my_c_attn_words(hidden_words)
         output_states = torch.cat((output_embeddings, output_words), dim=1)
-        query, key, value = output_states.split(self.split_size, dim=2)
+        #print('output_states is ', output_states)
+        query, key, value = output_states.contiguous().split(self.split_size, dim=2)
+        #print('query isss ', query)
         #print('query shape is ', query.shape)
         
         ## below is almost copy paste from GPT2Attention class!
