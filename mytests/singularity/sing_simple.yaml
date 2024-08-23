@@ -1,0 +1,74 @@
+description: Simple PyTorch job on MNIST on Singularity
+
+env_defaults:
+  NODES: 1
+  GPUS: 2
+  MEM: 32
+
+target:
+  service: sing
+  name: msrresrchvc
+  workspace_name: gcrllama2ws
+
+environment: 
+    image: amlt-sing/acpt-2.3.1-py3.10-cuda12.1 #amlt-sing/pytorch-1.11.0-cuda11.6
+    #image: h100-nvidia23.12-pytorch2.1.2-cuda12.3.2-deepspeed0.14.0-flashattn2.5.6:20240311
+    #username: phyagicr
+    #registry: phyagicr.azurecr.io
+    setup:
+    #- pip install azureml-mlflow tensorboard --user
+    #- conda install conda-forge::transformers
+    - python -m pip install -U pip
+    #- conda install conda-forge::deepspeed
+    #- pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 
+    #- pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1
+    - pip install transformers[torch]
+    #- pip install transformers[deepspeed]
+    - pip install accelerate -U
+    - pip install datasets
+    - pip install wandb
+    - pip install --upgrade wandb
+    #- pip install transformers[torch]
+    #- pip install datasets
+storage:
+  my_output:
+    storage_account_name: phyagistudent
+    container_name: t-kgatmiry-output
+    mount_dir: /mnt/t-kgatmiry-output
+  my_data:
+    storage_account_name: phyagistudent
+    container_name: t-kgatmiry-data
+    mount_dir: /mnt/t-kgatmiry-data
+
+code:
+  # local directory of the code. this will be uploaded to the server.
+  # $CONFIG_DIR is expanded to the directory of this config file
+  local_dir: ./src # $CONFIG_DIR/src
+
+# list of jobs to run, we run 2 jobs in this example
+jobs:
+#- name: high_lr
+#  sku: G1
+#  command:
+#  - python main.py --lr 0.5
+- name: tinystories-create-dataset
+  #mpi: True
+  sku: G1-H100
+  #sku: ${NODES}x${MEM}G${GPUS}
+  #sku: 80G2-A100
+  sla_tier: standard
+  priority: high
+  #mpi: True
+  #process_count_per_node: 2
+  command:
+  #- pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+  #- pip install transformers[torch]
+  #- pip install datasets
+  #- pip install deepspeed
+  #- deepspeed trainer_model3.py --deepspeed ds_config.json
+  - python create-dataset.py 
+  #- sleep 24h
+  #process_count_per_node: ${GPUS}
+  submit_args:
+    env:
+      {"RX_QUEUE_LEN": 8192, "IB_RX_QUEUE_LEN": 8192, "UCX_TLS": "tcp", "HCOLL_ENABLE_MCAST_ALL": 0, "coll_hcoll_enable": 0, "UCX_NET_DEVICES": "eth0", "NCCL_IB_TIMEOUT": 16, "NCCL_IB_SL": 0, "NCCL_IB_TC": 41, "NCCL_IB_GID_INDEX": 3, "NCCL_IB_QPS_PER_CONNECTION": 4, "NCCL_IB_HCA": "mlx5_1,mlx5_2,mlx5_3,mlx5_4,mlx5_5,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_14,mlx5_15,mlx5_16,mlx5_17", "NCCL_SOCKET_IFNAME": "eth0", "NCCL_DEBUG": "INFO"}

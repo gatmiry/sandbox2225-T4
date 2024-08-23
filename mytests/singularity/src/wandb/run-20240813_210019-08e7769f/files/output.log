@@ -1,0 +1,12 @@
+/home/t-kgatmiry/sandbox2225-T4/transformers/src/transformers/training_args.py:1525: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+[34m[1mwandb[39m[22m: [33mWARNING[39m The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+number if gpus being used is with deepspeed is  1
+number of huggingface gpus  1
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 8/8 [00:13<00:00,  1.74s/it]
+{'train_runtime': 14.022, 'train_samples_per_second': 57.053, 'train_steps_per_second': 0.571, 'train_loss': 4.203768253326416, 'epoch': 5.0}
