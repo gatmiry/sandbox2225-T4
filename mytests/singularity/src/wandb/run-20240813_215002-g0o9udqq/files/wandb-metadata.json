@@ -1,0 +1,168 @@
+{
+    "os": "Linux-6.5.0-1022-azure-x86_64-with-glibc2.35",
+    "python": "3.11.9",
+    "heartbeatAt": "2024-08-13T21:50:02.316159",
+    "startedAt": "2024-08-13T21:50:02.000934",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/t-kgatmiry/sandbox2225-T4/singularity/src/trainer_model3.py",
+    "codePathLocal": "trainer_model3.py",
+    "codePath": "singularity/src/trainer_model3.py",
+    "git": {
+        "remote": "git@github.com:khashayargatmiry/sandbox2225-T4.git",
+        "commit": "61fede80a1321c652cf6c3011eca770153bcad8c"
+    },
+    "email": "khashayargatmiry@gmail.com",
+    "root": "/home/t-kgatmiry/sandbox2225-T4",
+    "host": "GCRAZGDL1594",
+    "username": "t-kgatmiry@microsoft.com",
+    "executable": "/home/t-kgatmiry/miniconda3/envs/env3/bin/python",
+    "cpu_count": 24,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2615.325250000001,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3094.425,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3006.003,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2798.744,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3017.579,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2495.322,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3094.299,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2596.538,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2415.387,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3092.422,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2517.789,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2806.546,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2487.496,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2445.438,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 992.2479553222656,
+            "used": 557.6427879333496
+        }
+    },
+    "gpu": "NVIDIA A100 80GB PCIe",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA A100 80GB PCIe",
+            "memory_total": 85899345920
+        }
+    ],
+    "memory": {
+        "total": 216.20033645629883
+    }
+}
