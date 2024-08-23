@@ -1,4 +1,5 @@
 ## retriving the hidden state
+################################################################# This file is out-dated
 from transformers import AutoTokenizer, AutoModel
 import torch
 tokenizer = AutoTokenizer.from_pretrained('gpt2')

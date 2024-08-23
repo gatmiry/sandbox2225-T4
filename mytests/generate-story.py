@@ -11,7 +11,7 @@ input_ids = input_ids[:,5:]
 
 print('input ids are ', input_ids)
 from mymodelsummary import MyModel 
-#mymodel = MyModel.from_pretrained('nodotmodel3_weights_sirui')
+#mymodel = MyModel.from_pretrained('nodotmodel3_weights_sirui') ## third summary model, not very good
 mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-09--02:19:44alaki') ## second summary model
 #mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-05--20:10:40alaki') ## final correct with eos and not dot 
 #mymodel = MyModel.from_pretrained('posmodel3_weights_2024-08-01--05:36:40alaki')

@@ -6,7 +6,8 @@ from torch.utils.data import Dataset, Subset
 from torch.nn import CrossEntropyLoss
 # loading the dataset
 from datasets import load_dataset, DatasetDict
-from mymodel import MyModel
+from mymodelnew4 import MyModel
+import wandb
 
 myconfig = AutoConfig.from_pretrained('gpt2')
 context_length=512
@@ -22,7 +23,8 @@ tokenizer =  AutoTokenizer.from_pretrained('gpt2')
 #rint('output loss is ', outputs['loss'])
 
 from datasets import load_from_disk
-tokenized_datasets = load_from_disk('/mnt/t-kgatmiry-data/model3-outputs-gpt2tokenizer')
+tokenized_datasets = load_from_disk('/mnt/t-kgatmiry-data/model3-outputs-gpt2tokenizer-varlength')
+#tokenized_datasets = load_from_disk('/home/t-kgatmiry/sandbox2225-T4/mytests/model3-outputs-gpt2tokenizer-varlength')
 ## slicing the dataset to a smaller size
 tokenized_datasets = {
     'train': tokenized_datasets['train'].select(np.arange(100)),#500000
@@ -39,15 +41,20 @@ from transformers import Trainer, TrainingArguments
 import datetime
 datetime_str = datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S')
 
+import os
+os.environ["WANDB_API_KEY"] = "a0a24ea0cda5f514e5f825fdf03580842a5b1f40"
+wandb.init(project="my-huggingface-project", name="khashayar-wandb")
 args = TrainingArguments(
-    output_dir='/mnt/t-kgatmiry-output/nnmodel3_default_outputs_' + datetime_str,
-    logging_dir='/mnt/t-kgatmiry-output/nnmodel3_default_logs_' + datetime_str,
-    per_device_train_batch_size=5,
-    per_device_eval_batch_size=5,
+    #output_dir='/home/t-kgatmiry/sandbox2225-T4/singularity-trash/nodotmodel3_default_outputs_' + datetime_str,
+    #logging_dir='/home/t-kgatmiry/sandbox2225-T4/singularity-trash/nodotmodel3_default_logs_' + datetime_str,
+    output_dir='/mnt/t-kgatmiry-output/nodotmodel3_default_outputs_' + datetime_str,
+    logging_dir='/mnt/t-kgatmiry-output/nodotmodel3_default_logs_' + datetime_str,
+    per_device_train_batch_size=20,
+    per_device_eval_batch_size=20,
     evaluation_strategy='steps',
     logging_strategy='steps',
-    eval_steps=100,
-    logging_steps=100,
+    eval_steps=200,
+    logging_steps=50,
     save_steps=1000,
     gradient_accumulation_steps=8,
     num_train_epochs=8,
@@ -56,6 +63,7 @@ args = TrainingArguments(
     lr_scheduler_type="cosine",
     learning_rate=5e-4,
     fp16=True,
+    report_to="wandb"
     #deepspeed='./ds_config.json'
 )
 
@@ -66,14 +74,22 @@ trainer = Trainer(model=mymodel,
                   train_dataset=tokenized_datasets['train'],
                   eval_dataset=tokenized_datasets['validation']
                 )
-num_gpus_torch = torch.cuda.device_count()
+
 #import deepspeed
 #num_gpus_deep = deepspeed.comm.get_world_size()
+num_gpus_torch = torch.cuda.device_count()
 print('number if gpus being used is with deepspeed is ', num_gpus_torch)
+print('number of huggingface gpus ', trainer.args._n_gpu)
 trainer.train()
-model_state_dict = mymodel.state_dict()
-torch.save(model_state_dict, '/mnt/t-kgatmiry-output/nnmodel3_weights_' + datetime_str)
-log_history_file = '/mnt/t-kgatmiry-output/nnmodel3_logs_' + datetime_str + '.json'
+#model_state_dict = mymodel.state_dict()
+#torch.save(model_state_dict, '/mnt/t-kgatmiry-output/nodotmodel3_weights_' + datetime_str)
+
+
+trainer.save_model('/mnt/t-kgatmiry-output/nodotmodel3_weights_'+ datetime_str + '.json')
+log_history_file = '/mnt/t-kgatmiry-output/nodotmodel3_logs_' + datetime_str + '.json'
+#trainer.save_model('/home/t-kgatmiry/sandbox2225-T4/singularity-trash/nodotmodel3_weights_'+ datetime_str + '.json')
+#log_history_file = '/home/t-kgatmiry/sandbox2225-T4/singularity-trash/nodotmodel3_logs_' + datetime_str + '.json'
+
 import json
 with open(log_history_file, 'w') as f:
     json.dump(trainer.state.log_history, f, indent=4)

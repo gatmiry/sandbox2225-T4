@@ -32,6 +32,7 @@ class DataCollatorForConversationTraining(DataCollatorWithPadding):
         self.max_num_paragraphs = max_num_paragraphs
         self.tokenizer = tokenizer
     def __call__(self, features):
+        #print('len features is ', len(features))
         conv_len = self.max_num_paragraphs
         for short_conversation_list in features:
             if len(short_conversation_list['input_ids']) < conv_len:
@@ -42,6 +43,11 @@ class DataCollatorForConversationTraining(DataCollatorWithPadding):
             for i in range(conv_len):
                 #print('short_conversation_list is ', short_conversation_list)
                 conversations_over_time[i].append(short_conversation_list['input_ids'][i])
+        #for short_conversation_list in features:
+            #print('PRECOLLATOR: ', [self.tokenizer.decode(conversation[:5]) for conversation in short_conversation_list['input_ids']])
+        #for conversations in conversations_over_time:
+            #print('IN COLLATOR: ', [self.tokenizer.decode(conversation[:5]) for conversation in conversations])
         conversations_over_time = [self.tokenizer.pad({'input_ids': conversations}, padding=self.padding, return_tensors='pt')['input_ids'] for conversations in conversations_over_time]
         attention_masks_over_time = [self.tokenizer.pad({'input_ids': conversations}, padding=self.padding, return_tensors='pt')['attention_mask'] for conversations in conversations_over_time]
+        #print('len in collator is ', len(conversations_over_time))
         return {'input_ids_list': conversations_over_time, 'labels_list': conversations_over_time, 'attention_mask_list': attention_masks_over_time}

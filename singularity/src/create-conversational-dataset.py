@@ -19,6 +19,10 @@ with open('../conversational-dataset/conversations_gpt35_1.txt', 'r') as file:
         line = line.strip()
         if len(line) < 5:
             continue
+        if line[:10] == 'Background':
+            conversation = []
+            paragraph = line
+            state = 'User'
         if line[:4] == state or line[:9] == state:
             #print('im here! state is ', state)
             if paragraph != '':
@@ -28,10 +32,6 @@ with open('../conversational-dataset/conversations_gpt35_1.txt', 'r') as file:
                 count += 1
             paragraph = line
             state = flip(state)
-        elif line[:10] == 'Background':
-            conversation = []
-            paragraph = line
-            state = 'User'
         else:
             paragraph = paragraph + ' \n ' + line
         if line[-13:] == '<|endoftext|>':
@@ -43,12 +43,12 @@ with open('../conversational-dataset/conversations_gpt35_1.txt', 'r') as file:
             count = 0
             paragraph = ''
             state = 'User'
-            if len(conversations) > 210000:
+            if index > 3000000:
                 break
 
 ###
-train_data = conversations[:100000]
-test_data = conversations[100001:105000]
+train_data = conversations[:50000]
+test_data = conversations[50001:57830]
 
 ###
 from datasets import Dataset, DatasetDict
@@ -61,14 +61,14 @@ dataset = DatasetDict({'train': train_data, 'validation': test_data})
 from transformers import AutoTokenizer
 tokenizer = AutoTokenizer.from_pretrained('gpt2')
 max_length = 2048
-max_conversation_length = 20
+max_conversation_length = 50
 def tokenize(element):
-    #print('element is ', element)
+    print('element is ', element)
     outputs = [tokenizer(conversation)['input_ids'] for conversation in element['conversation']]
     conversations_batch = []
     for conversation in outputs:
         flag = True
-        if len(conversation) > max_conversation_length or len(conversation) < 5:
+        if len(conversation) > max_conversation_length:
             flag = False
         for paragraph in conversation:
             paragraph.append(tokenizer.eos_token_id)
@@ -83,4 +83,4 @@ def tokenize(element):
 tokenized_dataset = dataset.map(tokenize, batched=True, remove_columns=dataset['train'].column_names)
 
 ## 
-tokenized_dataset.save_to_disk('./conversational-dataset-100000')
+tokenized_dataset.save_to_disk('/mnt/t-kgatmiry-output/conversational-dataset-alaki')

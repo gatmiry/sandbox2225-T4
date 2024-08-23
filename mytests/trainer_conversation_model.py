@@ -8,6 +8,7 @@ from torch.nn import CrossEntropyLoss
 from datasets import load_dataset, DatasetDict
 from mymodelconv import MyModel
 from mycollators import DataCollatorForConversationTraining
+from customtrainer import CustomTrainer
 
 myconfig = AutoConfig.from_pretrained('gpt2')
 context_length=2048
@@ -31,7 +32,7 @@ tokenizer =  AutoTokenizer.from_pretrained('gpt2')
 #rint('output loss is ', outputs['loss'])
 
 from datasets import load_from_disk
-tokenized_datasets = load_from_disk('./conversational-dataset-300000')
+tokenized_datasets = load_from_disk('./conversational-dataset-100000')
 #tokenized_datasets = load_from_disk('./tinystories-withsummary-gpt2tokenizer')
 #tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-askubuntubody-150000train-10000test')
 #tokenized_datasets = load_from_disk('./model3-outputs-gpt2tokenizer-askubuntubody-margintraining-150000train-10000test')
@@ -57,15 +58,15 @@ datetime_str = datetime.datetime.now().strftime('%Y-%m-%d--%H:%M:%S') + 'alaki'
 args = TrainingArguments(
     output_dir='nodotmodel3_default_outputs_' + datetime_str,
     logging_dir='./nodotmodel3_default_logs_' + datetime_str,
-    per_device_train_batch_size=5,
-    per_device_eval_batch_size=5,
+    per_device_train_batch_size=4,
+    per_device_eval_batch_size=4,
     evaluation_strategy='steps',
     logging_strategy='steps',
     eval_steps=400,
     logging_steps=80,
     save_steps=1000000,
     gradient_accumulation_steps=8,
-    num_train_epochs=5,
+    num_train_epochs=4,
     weight_decay=0.1,
     warmup_steps=1_000,
     lr_scheduler_type="cosine",
