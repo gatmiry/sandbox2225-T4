@@ -30,10 +30,10 @@ class MyModel(PreTrainedModel):
 
     def forward(self, input_ids_list, labels_list=None, attention_mask_list=None):
         hidden_embedding = 0
-        total_loss = 0
+        total_loss = torch.tensor(0, dtype=torch.float32).to('cuda')
         logits_pack = []
         num_paragraphs = len(input_ids_list)
-        print('num paragraphs are ', num_paragraphs)
+        #print('num paragraphs are ', num_paragraphs)
         #print('len input id is ', len(input_ids_list))
         for i in range(1, num_paragraphs):
             #print('im here!!!')
@@ -76,7 +76,9 @@ class MyModel(PreTrainedModel):
             labels_list[i] = labels_list[i][:, 1:]
             loss_fct = CrossEntropyLoss()
             lm_loss = loss_fct(shifted_prediction_scores.contiguous().view(-1, self.config.vocab_size), labels_list[i].contiguous().view(-1))
+            #print('lm_loss dtype is ', lm_loss.dtype, ' total_loss dtype is ', total_loss.dtype)
             total_loss += lm_loss
             logits_pack.append(logits[:,1:,:])
+            #print([self.tokenizer.decode(input_ids)[:30] for input_ids in input_ids_list[i]])
         #print('im successfully here')
         return {'loss': total_loss}#, 'logits_pack': logits_pack}#, 'logits_pack':logits_pack}
