@@ -8,7 +8,7 @@ class OpenAIModel:
 
     def __init__(self):
         self.cos = torch.nn.CosineSimilarity(dim=1)
-        self.header = {'Authorization': '0NNFKdThRKtvSrCg5ApslcsVeg97r3bj'}
+        self.header = {'Authorization': ''}
         self.data = {'model': 'text-embedding-3-large', 'input': ['xxx', 'asdfe']}
         self.url = 'https://blog.yintat.com/dqjoBCx0P2k7/api/models/unified-completion'
         self.tokenizer = AutoTokenizer.from_pretrained('gpt2')
