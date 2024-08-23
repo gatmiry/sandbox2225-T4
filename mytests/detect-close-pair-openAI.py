@@ -25,7 +25,7 @@ The hours passed quietly in their secret garden until the sun began to set, cast
 
 import requests
 url = 'https://blog.yintat.com/dqjoBCx0P2k7/api/models/unified-completion'
-header =  {'Authorization': '0NNFKdThRKtvSrCg5ApslcsVeg97r3bj'}
+header =  {'Authorization': ''}
 data = {'model': 'text-embedding-3-large', 'input': [a, b, c]}
 response = requests.post(url, headers=header, json=data, timeout=600)
 import json
