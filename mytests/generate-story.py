@@ -10,9 +10,10 @@ input_ids = input_ids[:,5:]
 #print('input_ids is ', input_ids)
 
 print('input ids are ', input_ids)
-from mymodelsummary import MyModel 
+from mymodelconv import MyModel 
+mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-23--00:57:55alaki') ## second summary model
 #mymodel = MyModel.from_pretrained('nodotmodel3_weights_sirui') ## third summary model, not very good
-mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-09--02:19:44alaki') ## second summary model
+#mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-09--02:19:44alaki') ## second summary model
 #mymodel = MyModel.from_pretrained('nodotmodel3_weights_2024-08-05--20:10:40alaki') ## final correct with eos and not dot 
 #mymodel = MyModel.from_pretrained('posmodel3_weights_2024-08-01--05:36:40alaki')
 mymodel = mymodel.to('cuda')
@@ -28,6 +29,8 @@ another cow to be friends with the sad cow. The sad cow was happy now.
 They played together every day. And the kind farmer, the little boy,
 and the two cows all lived happily ever after.<|endoftext|>'''
 
+raw_story = "User: Hello, I have a question regarding the Clean Water Act's permit shield. In the case of Alaska Comm. Action on Toxics, et al. v. Aurora Energy Services, the Supreme Court declined to review the Ninth Circuit's holding. Can you explain the implications of this decision?<|endoftext|>"
+
 if len(sys.argv) > 1:
     input_string = sys.argv[1]
     print('string is provided')
@@ -39,6 +42,8 @@ from datasets import load_dataset
 tinystories = load_dataset('roneneldan/TinyStories')
 raw_story2 = tinystories['validation']['text'][1010]
 raw_story2 = raw_story2 + '<|endoftext|>'
+raw_story2 = "Assistant: Certainly! The Supreme Court's decision not to review the Ninth Circuit's holding in Alaska Comm. Action on Toxics, et al. v. Aurora Energy Services means that the Ninth Circuit's interpretation of the Clean Water Act's permit shield stands. The permit shield, as defined by the CWA, protects pollutant dischargers from liability under the Act if they have obtained and complied with a National Pollutant Discharge Elimination System (NPDES) permit. However, any violation of the permit's terms still constitutes a violation of the CWA. \n In this case, the Ninth Circuit held that the permit shield does not prevent citizen suits over discharges of pollutants not specifically listed in an NPDES permit. This means that even if a pollutant discharger has a valid NPDES permit, they can still be subject to legal action if they are found to be discharging pollutants not authorized by the permit. The Supreme Court's decision not to review this holding implies that the Ninth Circuit's interpretation aligns with the intent of the Clean Water Act.<|endoftext|>"
+
 
 raw_input_ids = tokenizer(raw_story, return_tensors='pt')['input_ids']
 raw_input_ids2 = tokenizer(raw_story2, return_tensors='pt')['input_ids']
@@ -49,7 +54,7 @@ raw_input_ids2 = raw_input_ids2.to('cuda')
 #print('raw input ids is ', raw_input_ids.type)
 hidden_embedding = mymodel.encoder(raw_input_ids).last_hidden_state.detach()[:, -1, :].unsqueeze(1)
 hidden_embedding2 = mymodel.encoder(raw_input_ids2).last_hidden_state.detach()[:, -1, :].unsqueeze(1)
-hidden_embedding = (hidden_embedding2 + hidden_embedding2)/2
+hidden_embedding = (hidden_embedding + hidden_embedding2)
 
 
 print(hidden_embedding.shape)
